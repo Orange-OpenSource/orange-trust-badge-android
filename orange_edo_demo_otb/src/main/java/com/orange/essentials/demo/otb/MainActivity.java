@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements BadgeListener {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         CustomBadgeFactory customBadgeFactory = new CustomBadgeFactory(getApplicationContext());
-        TrustBadgeManager.INSTANCE.initialize(getApplicationContext(), customBadgeFactory.getTrustBadgeElements(), customBadgeFactory.getTerms());
+        TrustBadgeManager.INSTANCE.initialize(getApplicationContext(), true, customBadgeFactory.getTrustBadgeElements(), customBadgeFactory.getTerms());
 
         //We can add a badge listener. Make sure to do not have multiple copy of the same listener
         //You can also clear existing listener using: TrustBadgeManager.INSTANCE.clearBadgeListener();

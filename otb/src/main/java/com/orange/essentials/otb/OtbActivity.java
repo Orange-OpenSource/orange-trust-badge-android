@@ -26,7 +26,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.orange.essentials.otb.event.EventType;
@@ -39,6 +38,7 @@ import com.orange.essentials.otb.ui.OtbContainerFragment;
 import com.orange.essentials.otb.ui.OtbDataFragment;
 import com.orange.essentials.otb.ui.OtbTermsFragment;
 import com.orange.essentials.otb.ui.OtbUsageFragment;
+import com.orange.tools.logger.Logger;
 
 import java.io.Serializable;
 import java.util.List;
@@ -74,10 +74,10 @@ public class OtbActivity extends AppCompatActivity implements OtbContainerFragme
             isMasterDetail = useMasterDetail();
             initFragments();
         } else {
-            Log.v(TAG, "savedInstanceState != null");
-            Log.v(TAG, "useMasterDetail: " + useMasterDetail());
+            Logger.v(TAG, "savedInstanceState != null");
+            Logger.v(TAG, "useMasterDetail: " + useMasterDetail());
             if (useMasterDetail() != isMasterDetail) {
-                Log.v(TAG, "popBackstack");
+                Logger.v(TAG, "popBackstack");
                 //restore from scratch
                 FragmentManager fm = getSupportFragmentManager();
                 for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
@@ -105,23 +105,23 @@ public class OtbActivity extends AppCompatActivity implements OtbContainerFragme
 
         // Landscape mode
         if (useMasterDetail()) {
-            Log.d(TAG, "Landscape mode - add child fragment");
+            Logger.d(TAG, "Landscape mode - add child fragment");
             Fragment frag = null;
             String tag = null;
             if (TrustBadgeManager.INSTANCE.hasData()) {
-                Log.d(TAG, "Landscape mode - add data fragment");
+                Logger.d(TAG, "Landscape mode - add data fragment");
                 frag = new OtbDataFragment();
                 tag = OtbDataFragment.FRAG_TAG;
             } else if (TrustBadgeManager.INSTANCE.hasUsage()) {
-                Log.d(TAG, "Landscape mode - add usage fragment");
+                Logger.d(TAG, "Landscape mode - add usage fragment");
                 frag = new OtbUsageFragment();
                 tag = OtbUsageFragment.FRAG_TAG;
             } else if (TrustBadgeManager.INSTANCE.hasTerms()) {
-                Log.d(TAG, "Landscape mode - add terms fragment");
+                Logger.d(TAG, "Landscape mode - add terms fragment");
                 frag = new OtbTermsFragment();
                 tag = OtbTermsFragment.FRAG_TAG;
             } else {
-                Log.d(TAG, "Landscape mode - No item found, add data fragment by default");
+                Logger.d(TAG, "Landscape mode - No item found, add data fragment by default");
                 frag = new OtbDataFragment();
                 tag = OtbDataFragment.FRAG_TAG;
             }
@@ -136,19 +136,19 @@ public class OtbActivity extends AppCompatActivity implements OtbContainerFragme
 
     @Override
     public void onDataClick() {
-        Log.d(TAG, "onDataClick");
+        Logger.d(TAG, "onDataClick");
         displayDetail(new OtbDataFragment(), OtbDataFragment.FRAG_TAG);
     }
 
     @Override
     public void onUsageClick() {
-        Log.d(TAG, "onUsageClick");
+        Logger.d(TAG, "onUsageClick");
         displayDetail(new OtbUsageFragment(), OtbUsageFragment.FRAG_TAG);
     }
 
     @Override
     public void onTermsClick() {
-        Log.d(TAG, "onTermsClick");
+        Logger.d(TAG, "onTermsClick");
         displayDetail(new OtbTermsFragment(), OtbTermsFragment.FRAG_TAG);
     }
 
@@ -195,7 +195,7 @@ public class OtbActivity extends AppCompatActivity implements OtbContainerFragme
 
     @Override
     public void onBadgeChange(TrustBadgeElement trustBadgeElement, boolean value, AppCompatActivity callingActivity) {
-        Log.d(TAG, "onChange trustBadgeElement=" + trustBadgeElement + " value=" + value);
+        Logger.d(TAG, "onChange trustBadgeElement=" + trustBadgeElement + " value=" + value);
         if (null != trustBadgeElement) {
             if (GroupType.IMPROVEMENT_PROGRAM.equals(trustBadgeElement.getGroupType())) {
                 TrustBadgeManager.INSTANCE.setUsingImprovementProgram(value);
@@ -217,7 +217,7 @@ public class OtbActivity extends AppCompatActivity implements OtbContainerFragme
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.d(TAG, "Saving Factory");
+        Logger.d(TAG, "Saving Factory");
         super.onSaveInstanceState(outState);
         outState.putSerializable(BADGES_KEY, (Serializable) TrustBadgeManager.INSTANCE.getTrustBadgeElements());
         outState.putSerializable(TERMS_KEY, (Serializable) TrustBadgeManager.INSTANCE.getTerms());
@@ -225,14 +225,14 @@ public class OtbActivity extends AppCompatActivity implements OtbContainerFragme
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.d(TAG, "Restoring factory");
+        Logger.d(TAG, "Restoring factory");
         super.onRestoreInstanceState(savedInstanceState);
         restoreFactory(savedInstanceState);
     }
 
     private void restoreFactory(Bundle savedInstanceState) {
         if (null != savedInstanceState && null != savedInstanceState.getSerializable(BADGES_KEY)) {
-            Log.d(TAG, "Restoring factory from instanceState");
+            Logger.d(TAG, "Restoring factory from instanceState");
             List<TrustBadgeElement> badges = (List<TrustBadgeElement>) savedInstanceState.getSerializable(BADGES_KEY);
             List<Term> terms = (List<Term>) savedInstanceState.getSerializable(TERMS_KEY);
             TrustBadgeManager.INSTANCE.initialize(getApplicationContext(), badges, terms);

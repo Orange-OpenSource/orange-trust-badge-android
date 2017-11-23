@@ -27,7 +27,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.orange.essentials.otb.R;
+import com.orange.essentials.otb.logger.Logger;
 import com.orange.essentials.otb.manager.TrustBadgeManager;
 import com.orange.essentials.otb.model.TrustBadgeElement;
 import com.orange.essentials.otb.model.type.AppUsesPermission;
@@ -80,7 +80,7 @@ public class OtbContainerFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onResume() {
-        Log.d(TAG, "Resuming Fragment");
+        Logger.d(TAG, "Resuming Fragment");
         super.onResume();
 
         /** Manage ActionBar title*/
@@ -177,7 +177,7 @@ public class OtbContainerFragment extends android.support.v4.app.Fragment {
      * Add the policy buttons ont appropriate layout
      */
     private void buildCards() {
-        Log.d(TAG, "buildCards");
+        Logger.d(TAG, "buildCards");
         LinearLayout dataLayout = null;
         LinearLayout usageLayout = null;
         View containerData = this.getActivity().findViewById(R.id.otb_home_data_card);
@@ -202,7 +202,7 @@ public class OtbContainerFragment extends android.support.v4.app.Fragment {
             List<TrustBadgeElement> trustBadgeElements = TrustBadgeManager.INSTANCE.getTrustBadgeElements();
             if (trustBadgeElements != null) {
                 for (TrustBadgeElement trustBadgeElement : trustBadgeElements) {
-                    Log.d(TAG, trustBadgeElement.toString());
+                    Logger.d(TAG, trustBadgeElement.toString());
 
                     if (trustBadgeElement.getElementType() == ElementType.MAIN || trustBadgeElement.getElementType() == ElementType.USAGE) {
 
@@ -257,10 +257,10 @@ public class OtbContainerFragment extends android.support.v4.app.Fragment {
                     }
                 }
             } else {
-                Log.d(TAG, "TrustBadgeElements is null, please add TrustBadgeElements to list");
+                Logger.d(TAG, "TrustBadgeElements is null, please add TrustBadgeElements to list");
             }
         }
-        Log.d(TAG, "buildCards");
+        Logger.d(TAG, "buildCards");
     }
 
     /***********************************************************************************************

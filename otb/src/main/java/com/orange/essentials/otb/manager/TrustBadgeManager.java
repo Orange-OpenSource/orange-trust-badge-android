@@ -24,10 +24,10 @@ package com.orange.essentials.otb.manager;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.orange.essentials.otb.event.EventTagger;
 import com.orange.essentials.otb.event.EventType;
+import com.orange.essentials.otb.logger.Logger;
 import com.orange.essentials.otb.model.Term;
 import com.orange.essentials.otb.model.TrustBadgeElement;
 import com.orange.essentials.otb.model.type.ElementType;
@@ -104,23 +104,23 @@ public enum TrustBadgeManager {
      */
     private String extractApplicationName(@NonNull Context context) {
         String appName = context.getPackageName();
-        Log.d(TAG, "extractApplicationName");
+        Logger.d(TAG, "extractApplicationName");
         CharSequence csName = context.getApplicationInfo().loadLabel(context.getPackageManager());
         if (null != csName) {
             appName = csName.toString();
         }
-        Log.d(TAG, "extractApplicationName");
+        Logger.d(TAG, "extractApplicationName");
         return appName;
     }
 
     /**
-     * provide init with default BadgeFactory
+     * provide init with default BadgeFactory. Logs are disabled.
      *
      * @param context : Context providing needed data to retrieve permissions infos
      */
     public void initialize(@NonNull Context context) {
         PermissionManager.INSTANCE.initPermissionList(context);
-        initialize(context, TrustBadgeElementFactory.getDefaultElements(context), new ArrayList<Term>());
+        initialize(context, false, TrustBadgeElementFactory.getDefaultElements(context), new ArrayList<Term>());
     }
 
 
@@ -128,26 +128,28 @@ public enum TrustBadgeManager {
      * initialize
      *
      * @param context            : Activity providing needed data to retrieve permissions infos
-     * @param trustBadgeElements : the list of trsut badge that will be used into the app
+     * @param enableLogs         : enable logs in otb, they are disabled by default.
+     * @param trustBadgeElements : the list of trust badge that will be used into the app
      */
-    public void initialize(@NonNull Context context, List<TrustBadgeElement> trustBadgeElements, List<Term> terms) {
+    public void initialize(@NonNull Context context, boolean enableLogs, List<TrustBadgeElement> trustBadgeElements, List<Term> terms) {
 
-        Log.d(TAG, "TrustBadgeManager initialize");
+        if (enableLogs) Logger.allowLogging();
+        Logger.d(TAG, "TrustBadgeManager initialize");
         PermissionManager.INSTANCE.initPermissionList(context);
         mApplicationName = extractApplicationName(context);
         if (!mApplicationName.isEmpty()) {
-            Log.d(TAG, "mApplicationName is NOT empty");
+            Logger.d(TAG, "mApplicationName is NOT empty");
             mApplicationPackageName = context.getPackageName();
             if (mApplicationPackageName != null && mApplicationPackageName.length() != 0) {
-                Log.d(TAG, "mApplicationPackageName is NOT empty");
+                Logger.d(TAG, "mApplicationPackageName is NOT empty");
                 /** Initialisation of TrustBadgeElements to 15 permissions */
                 setTrustBadgeElements(trustBadgeElements);
                 setTerms(terms);
             } else {
-                Log.d(TAG, "Context does not provide PackageName.");
+                Logger.d(TAG, "Context does not provide PackageName.");
             }
         } else {
-            Log.d(TAG, "Context does not provide ApplicationName.");
+            Logger.d(TAG, "Context does not provide ApplicationName.");
         }
         mInitialized = true;
     }
@@ -170,18 +172,18 @@ public enum TrustBadgeManager {
      * retrieve list of  permissions
      */
     public ArrayList<TrustBadgeElement> getElementsForDataCollected() {
-        Log.d(TAG, "getElementsForDataCollected");
+        Logger.d(TAG, "getElementsForDataCollected");
         ArrayList<TrustBadgeElement> resultPermissionList = new ArrayList<>();
         if (mTrustBadgeElements != null) {
             for (TrustBadgeElement trustBadgeElement : mTrustBadgeElements) {
-                Log.d(TAG, "getElementsForDataCollected  : " + trustBadgeElement.getGroupType() + ", " + trustBadgeElement.getElementType() + ", " + trustBadgeElement.getAppUsesPermission() + ", " + trustBadgeElement.getUserPermissionStatus());
+                Logger.d(TAG, "getElementsForDataCollected  : " + trustBadgeElement.getGroupType() + ", " + trustBadgeElement.getElementType() + ", " + trustBadgeElement.getAppUsesPermission() + ", " + trustBadgeElement.getUserPermissionStatus());
                 if (trustBadgeElement.getElementType() != ElementType.USAGE) {
                     resultPermissionList.add(trustBadgeElement);
-                    Log.d(TAG, trustBadgeElement.getNameKey() + " ==> ADDED");
+                    Logger.d(TAG, trustBadgeElement.getNameKey() + " ==> ADDED");
                 }
             }
         } else {
-            Log.d(TAG, "Empty mTrustBadgeElements.");
+            Logger.d(TAG, "Empty mTrustBadgeElements.");
         }
         return resultPermissionList;
     }
@@ -190,12 +192,12 @@ public enum TrustBadgeManager {
      * retrieve a specific badge according to type
      */
     public TrustBadgeElement getSpecificPermission(GroupType groupType) {
-        Log.d(TAG, "getSpecificPermission");
+        Logger.d(TAG, "getSpecificPermission");
         TrustBadgeElement result = null;
         if (null != mTrustBadgeElements) {
             for (TrustBadgeElement trustBadgeElement : mTrustBadgeElements) {
                 if (trustBadgeElement.getGroupType() == groupType) {
-                    Log.d(TAG, "trustBadgeElement.getElementType() equals " + ElementType.USAGE.toString());
+                    Logger.d(TAG, "trustBadgeElement.getElementType() equals " + ElementType.USAGE.toString());
                     result = trustBadgeElement;
                 }
             }
@@ -240,7 +242,7 @@ public enum TrustBadgeManager {
      * Refresh the badges according to the permissions granted by the app
      */
     public void refreshTrustBadgePermission(@NonNull Context context) {
-        Log.d(TAG, "refreshTrustBadgePermission...");
+        Logger.d(TAG, "refreshTrustBadgePermission...");
         PermissionManager.INSTANCE.initPermissionList(context);
         for (int i = 0; i < mTrustBadgeElements.size(); i++) {
             TrustBadgeElement trustBadgeElement = mTrustBadgeElements.get(i);
@@ -254,7 +256,7 @@ public enum TrustBadgeManager {
                 }
             }
 
-            Log.d(TAG, "refresh = " + trustBadgeElement);
+            Logger.d(TAG, "refresh = " + trustBadgeElement);
         }
 
     }
@@ -270,7 +272,7 @@ public enum TrustBadgeManager {
      */
     public boolean hasData() {
         boolean data = getElementsForDataCollected() != null && getElementsForDataCollected().size() > 0;
-        Log.d(TAG, "hasData : " + data);
+        Logger.d(TAG, "hasData : " + data);
         return data;
     }
 
@@ -281,7 +283,7 @@ public enum TrustBadgeManager {
      */
     public boolean hasUsage() {
         boolean usage = getElementsForUsage() != null && getElementsForUsage().size() > 0;
-        Log.d(TAG, "hasUsage : " + usage);
+        Logger.d(TAG, "hasUsage : " + usage);
         return usage;
     }
 
@@ -292,7 +294,7 @@ public enum TrustBadgeManager {
      */
     public boolean hasTerms() {
         boolean terms = getTerms() != null && getTerms().size() > 0;
-        Log.d(TAG, "hasTerms : " + terms);
+        Logger.d(TAG, "hasTerms : " + terms);
         return terms;
     }
 
@@ -341,12 +343,12 @@ public enum TrustBadgeManager {
             mEventTagger = new EventTagger() {
                 @Override
                 public void tag(EventType eventType) {
-                    Log.d(TAG, "tagging event " + eventType);
+                    Logger.d(TAG, "tagging event " + eventType);
                 }
 
                 @Override
                 public void tagElement(EventType eventType, TrustBadgeElement element) {
-                    Log.d(TAG, "tagging event " + eventType + " for element " + element);
+                    Logger.d(TAG, "tagging event " + eventType + " for element " + element);
                 }
             };
         }

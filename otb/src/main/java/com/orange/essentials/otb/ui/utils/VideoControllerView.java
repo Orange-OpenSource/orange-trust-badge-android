@@ -20,7 +20,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -35,6 +34,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.orange.essentials.otb.R;
+import com.orange.essentials.otb.logger.Logger;
 
 import java.lang.ref.WeakReference;
 import java.util.Formatter;
@@ -197,7 +197,7 @@ public class VideoControllerView extends FrameLayout {
         mUseFastForward = true;
         mFromXml = true;
 
-        Log.i(TAG, TAG);
+        Logger.i(TAG, TAG);
     }
 
     public VideoControllerView(Context context, boolean useFastForward) {
@@ -205,13 +205,13 @@ public class VideoControllerView extends FrameLayout {
         mContext = context;
         mUseFastForward = useFastForward;
 
-        Log.i(TAG, TAG);
+        Logger.i(TAG, TAG);
     }
 
     public VideoControllerView(Context context) {
         this(context, true);
 
-        Log.i(TAG, TAG);
+        Logger.i(TAG, TAG);
     }
 
     @Override
@@ -407,7 +407,7 @@ public class VideoControllerView extends FrameLayout {
             mAnchor.removeView(this);
             mHandler.removeMessages(SHOW_PROGRESS);
         } catch (IllegalArgumentException ex) {
-            Log.w("MediaController", "already removed");
+            Logger.w("MediaController", "already removed");
         }
         mShowing = false;
     }
