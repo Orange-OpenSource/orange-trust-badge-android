@@ -29,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.orange.essentials.otb.event.EventType;
+import com.orange.essentials.otb.logger.Logger;
 import com.orange.essentials.otb.manager.BadgeListener;
 import com.orange.essentials.otb.manager.TrustBadgeManager;
 import com.orange.essentials.otb.model.Term;
@@ -38,7 +39,6 @@ import com.orange.essentials.otb.ui.OtbContainerFragment;
 import com.orange.essentials.otb.ui.OtbDataFragment;
 import com.orange.essentials.otb.ui.OtbTermsFragment;
 import com.orange.essentials.otb.ui.OtbUsageFragment;
-import com.orange.tools.logger.Logger;
 
 import java.io.Serializable;
 import java.util.List;
@@ -52,6 +52,7 @@ import java.util.List;
 public class OtbActivity extends AppCompatActivity implements OtbContainerFragment.OtbFragmentListener, BadgeListener {
 
     private static final String TAG = "OtbActivity";
+    private static final String LOGS_KEY = "LogsKey";
     private static final String BADGES_KEY = "BadgesKey";
     private static final String TERMS_KEY = "TermsKey";
 
@@ -219,6 +220,7 @@ public class OtbActivity extends AppCompatActivity implements OtbContainerFragme
     protected void onSaveInstanceState(Bundle outState) {
         Logger.d(TAG, "Saving Factory");
         super.onSaveInstanceState(outState);
+        outState.putBoolean(LOGS_KEY, Logger.isLoggingAllowed());
         outState.putSerializable(BADGES_KEY, (Serializable) TrustBadgeManager.INSTANCE.getTrustBadgeElements());
         outState.putSerializable(TERMS_KEY, (Serializable) TrustBadgeManager.INSTANCE.getTerms());
     }
@@ -233,9 +235,10 @@ public class OtbActivity extends AppCompatActivity implements OtbContainerFragme
     private void restoreFactory(Bundle savedInstanceState) {
         if (null != savedInstanceState && null != savedInstanceState.getSerializable(BADGES_KEY)) {
             Logger.d(TAG, "Restoring factory from instanceState");
+            boolean logsEnabled = savedInstanceState.getBoolean(LOGS_KEY);
             List<TrustBadgeElement> badges = (List<TrustBadgeElement>) savedInstanceState.getSerializable(BADGES_KEY);
             List<Term> terms = (List<Term>) savedInstanceState.getSerializable(TERMS_KEY);
-            TrustBadgeManager.INSTANCE.initialize(getApplicationContext(), badges, terms);
+            TrustBadgeManager.INSTANCE.initialize(getApplicationContext(), logsEnabled, badges, terms);
         }
     }
 }
