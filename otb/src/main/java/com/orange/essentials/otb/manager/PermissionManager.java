@@ -27,8 +27,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.PermissionInfo;
 import android.os.Binder;
 import android.os.Build;
-import android.util.Log;
 
+import com.orange.essentials.otb.logger.Logger;
 import com.orange.essentials.otb.model.type.AppUsesPermission;
 import com.orange.essentials.otb.model.type.GroupType;
 import com.orange.essentials.otb.model.type.UserPermissionStatus;
@@ -57,7 +57,7 @@ public enum PermissionManager {
     }
 
     public void initPermissionList(Context context) {
-        Log.d(TAG, "initPermissionList for context " + context);
+        Logger.d(TAG, "initPermissionList for context " + context);
         //Cleaning old stored groups
         mGroupNameList.clear();
         PackageInfo pkgInfo = null;
@@ -68,31 +68,31 @@ public enum PermissionManager {
             );
 
         } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "PackageManagerName NOT found.", e);
+            Logger.e(TAG, "PackageManagerName NOT found.", e);
         }
         if (null != pkgInfo) {
             //getting Host app permissions declared in Manifest.xml
             String[] requestedPermissions = pkgInfo.requestedPermissions;
             if (requestedPermissions != null) {
-                Log.d(TAG, "requestedPermissions is not null");
+                Logger.d(TAG, "requestedPermissions is not null");
                 for (int i = 0; i < requestedPermissions.length; i++) {
-                    Log.d(TAG, "Adding permission : " + requestedPermissions[i]);
+                    Logger.d(TAG, "Adding permission : " + requestedPermissions[i]);
                     mGroupNameList.add(requestedPermissions[i]);
                     try {
-                        Log.d(TAG, "Looking group for permission " + requestedPermissions[i]);
+                        Logger.d(TAG, "Looking group for permission " + requestedPermissions[i]);
                         PermissionInfo pinfo = context.getPackageManager().getPermissionInfo(requestedPermissions[i], PackageManager.GET_META_DATA);
                         if (pinfo.group != null) {
-                            Log.d(TAG, "Adding permission group " + pinfo.group);
+                            Logger.d(TAG, "Adding permission group " + pinfo.group);
                             mGroupNameList.add(pinfo.group);
                         }
                     } catch (PackageManager.NameNotFoundException e) {
-                        Log.d(TAG, "PackageManagerName NOT found. Adding permission name " + requestedPermissions[i] + ", " + e.getMessage());
+                        Logger.d(TAG, "PackageManagerName NOT found. Adding permission name " + requestedPermissions[i] + ", " + e.getMessage());
                     }
                 }
             }
             initialized = true;
         } else {
-            Log.d(TAG, "pkgInfo not found");
+            Logger.d(TAG, "pkgInfo not found");
         }
     }
 
@@ -104,7 +104,7 @@ public enum PermissionManager {
      * @return Values.USER_STATUS
      */
     public UserPermissionStatus doesUserAlreadyAcceptPermission(Context context, GroupType groupType) {
-        Log.d(TAG, "doesUserAlreadyAcceptPermissionGroup " + groupType);
+        Logger.d(TAG, "doesUserAlreadyAcceptPermissionGroup " + groupType);
         UserPermissionStatus result;
 
         if (groupType == GroupType.IMPROVEMENT_PROGRAM || groupType == GroupType.IDENTITY) {
@@ -112,7 +112,7 @@ public enum PermissionManager {
         } else {
             int currentapiVersion = Build.VERSION.SDK_INT;
             if (currentapiVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                Log.d(TAG, "currentapiVersion >= Build.VERSION_CODES.M =true");
+                Logger.d(TAG, "currentapiVersion >= Build.VERSION_CODES.M =true");
                 int permission = context.checkPermission(findInAppPermission(context, groupType), android.os.Process.myPid(), Binder.getCallingUid());
                 if (permission != PackageManager.PERMISSION_GRANTED) {
                     result = UserPermissionStatus.NOT_GRANTED;
@@ -129,7 +129,7 @@ public enum PermissionManager {
 
             }
         }
-        Log.d(TAG, "doesUserAlreadyAcceptPermissionGroup " + groupType + " is " + result);
+        Logger.d(TAG, "doesUserAlreadyAcceptPermissionGroup " + groupType + " is " + result);
         return result;
     }
 
@@ -154,15 +154,15 @@ public enum PermissionManager {
                 }
             }
         } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "findInAppPermission, package manager not found", e);
+            Logger.e(TAG, "findInAppPermission, package manager not found", e);
         }
-        Log.d(TAG, "finInAppPermission for groupType " + groupType + " returns " + result);
+        Logger.d(TAG, "finInAppPermission for groupType " + groupType + " returns " + result);
         return result;
     }
 
     public String getGroupNameForGroupType(GroupType groupType) {
         String result = null;
-        Log.d(TAG, "getGroupName " + groupType + " in " + mGroupNameList.size());
+        Logger.d(TAG, "getGroupName " + groupType + " in " + mGroupNameList.size());
         for (String data : mGroupNameList) {
             if (groupType.matchPermission(data)) {
                 result = data;

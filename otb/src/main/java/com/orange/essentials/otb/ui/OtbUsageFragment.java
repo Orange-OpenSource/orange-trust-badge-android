@@ -27,7 +27,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +36,7 @@ import android.widget.TextView;
 
 import com.orange.essentials.otb.R;
 import com.orange.essentials.otb.event.EventType;
+import com.orange.essentials.otb.logger.Logger;
 import com.orange.essentials.otb.manager.TrustBadgeManager;
 import com.orange.essentials.otb.model.TrustBadgeElement;
 import com.orange.essentials.otb.model.type.AppUsesPermission;
@@ -71,11 +71,11 @@ public class OtbUsageFragment extends Fragment {
         view.addView(header);
 
         ArrayList<TrustBadgeElement> usages = TrustBadgeManager.INSTANCE.getElementsForUsage();
-        Log.v(TAG, "usages elements: " + usages.size());
+        Logger.v(TAG, "usages elements: " + usages.size());
         for (final TrustBadgeElement usage : usages) {
             View usageView = View.inflate(getContext(), R.layout.otb_data_usage_item, null);
             ViewHelper.INSTANCE.buildView(usageView, usage, getContext());
-            Log.v(TAG, "add usage view");
+            Logger.v(TAG, "add usage view");
             view.addView(usageView);
 
             if (usage.isToggable()) {

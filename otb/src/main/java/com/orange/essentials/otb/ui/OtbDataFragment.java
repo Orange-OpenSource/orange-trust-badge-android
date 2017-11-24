@@ -29,7 +29,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +39,7 @@ import android.widget.TextView;
 
 import com.orange.essentials.otb.R;
 import com.orange.essentials.otb.event.EventType;
+import com.orange.essentials.otb.logger.Logger;
 import com.orange.essentials.otb.manager.TrustBadgeManager;
 import com.orange.essentials.otb.model.TrustBadgeElement;
 import com.orange.essentials.otb.model.type.AppUsesPermission;
@@ -94,7 +94,7 @@ public class OtbDataFragment extends Fragment {
 
     @Override
     public void onResume() {
-        Log.d(TAG, "onResume");
+        Logger.d(TAG, "onResume");
         super.onResume();
         /** Manage ActionBar */
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();

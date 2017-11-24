@@ -7,13 +7,13 @@ group = 'com.orange.essentials'
 version = 'G01R00C00'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         //applicationId "com.orange.essentials.otb"
         minSdkVersion 10
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 15
         versionName version_name
         setProperty("archivesBaseName", "Orange_trust_badge-$versionName")
